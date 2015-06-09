@@ -110,12 +110,20 @@ init_landscape <- function(states, cover, width = 50, height = 50) {
 }
 
 
+###################################################
+## summary output for a landscape object  ##
+###################################################
+
 summary.landscape <- function(x) {
   out <- list()
   out$n <- sapply(levels(x$cells), function(y) {sum(x$cells == y)})
   out$cover <- out$n/sum(out$n)
   out$local <- sapply(levels(x$cells), function(y) {mean(count(x,y )/4)})
   return(out)
+}
+
+print.landscape <- function(x) {
+  return(summary(x))
 }
 
 ########################################################
