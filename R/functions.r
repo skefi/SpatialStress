@@ -189,9 +189,15 @@ update_grazing <- function(x_old, parms_temp, delta = 0.2, subs = 10, timestep =
     
     # 3 - setting transition probabilities
     
-    recolonisation <- with(parms_temp, (del*rho_plus+(1-del)*Q_plus)*(b-c_*rho_plus)*1/subs)
+    if(parms_temp$rho_plus > 0) {
+      recolonisation <- with(parms_temp, (del*rho_plus+(1-del)*Q_plus)*(b-c_*rho_plus)*1/subs)
+    
     death <- with(parms_temp, (m0+g*(1-protect))*1/subs)
     death[death > 1] <- 1 
+    } else {
+      recolonisation <- 0
+      death <- 1
+    }
     
     regeneration <- with(parms_temp, (r + f*Q_plus)*1/subs)
     
@@ -262,13 +268,13 @@ ca <- function(x, parms, delta = 0.1, t_max = 1000, t_min = 500, t_eval = 200, i
   i = 0  # iterator for simulation timesteps
   
   # starting iterations:
-  while(stability > isstable & i <= t_max & result$cover[[1]][i+1] > 0) {
+  while(stability > isstable & i <= t_max ) {
 
     i <- i +1  # increase iterator
     
     update_grazing(x_old, parms, 10) -> x_new
     
-    xstats <- summary(x)
+    xstats <- summary(x_new)
     result$cover[i,] <- xstats$cover
     result$local[i,] <- xstats$local
     
