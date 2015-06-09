@@ -121,15 +121,16 @@ summary.landscape <- function(x) {
 ########################################################
 ## plotting function for objects of class "landscape" ##
 ########################################################
+grayscale <- colorRampPalette(c("black", "white"), space = "rgb")
 
 plot.landscape <- function(x, grid = FALSE, axis = FALSE, cols = "auto", add = FALSE, ani = FALSE, ...) {
   lvls <- levels(x$cells) 
   nlev <- length(lvls)
-  if(cols[1] == "auto") cols = c("black", "white")  # default color value
+   if(cols[1] == "auto") cols = grayscale(nlev)  # default color value
   
   if(ani & Sys.info()[['sysname']] == "Windows") adj = -0.5 else adj = 0 #this adjustment constant is added when producing a pixel accurate png or gif file, requires TRUE when the function is used to plot animated figures. 
   
-  if(!add) plot(NA,NA, xlim = c(0.5+adj, x$dim[1]+0.5+adj), ylim = c( x$dim[2]+0.5+adj, 0+0.5+adj), bty = c("n", "o")[grid+1], xaxs = "i", yaxs = "i",xlab = "", ylab = "", xaxt = "n", yaxt = "n", ... ) 
+  if(!add) plot(NA,NA, xlim = c(0.5+adj, x$dim[1]+0.5+adj), ylim = c( x$dim[2]+0.5+adj, 0+0.5+adj), bty = c("n", "o")[grid+1], xaxs = "i", yaxs = "i",xlab = "", ylab = "", xaxt = "n", yaxt = "n", asp = 1, ... ) 
   
   if(axis && !add) axis(3) 
   if(axis && !add) axis(2)
