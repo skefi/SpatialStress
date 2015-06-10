@@ -295,3 +295,84 @@ plot.ca_result <- function(x, plotstates = c(TRUE, FALSE, FALSE), snapshots = FA
 
 }
 
+
+
+################################
+## get indicators of ca_result ##
+################################
+
+
+summary.ca_result <- function(x) {
+  out <- list()
+  class(out) <- "ca_summary"
+  eval <- x$evaluate[1]:x$evaluate[2]
+  out$name <- x$model$name
+  out$time <- c(min(x$time), max(x$time))
+  out$mean_cover <- colMeans(x$cover[eval,])
+  out$sd_cover <- sapply(x$cover[eval,], sd)
+  
+  return(out)
+}
+  
+
+indicators <- function(x, spatial = TRUE, temporal = TRUE) {
+  require(moments)
+  i_out <- list()
+  class(i_out) <- "ca_indicators"
+  i_out$model <- x$model
+  eval <- x$evaluate[1]:x$evaluate[2]
+  i_out$mean_cover <- colMeans(x$cover[eval,])
+  i_out$sd_cover <- sapply(x$cover[eval,], sd)
+  i_out$skewness_cover <- sapply(x$cover[eval,], skewness)
+  i_out$mean_local <- colMeans(x$local[eval,])
+  i_out$sd_local <- sapply(x$local[eval,], sd)  
+  i_out$skewness_local <- sapply(x$local[eval,], skewness)
+  i_out$mean_clustering <- colMeans(x$local[eval,]/x$cover[eval,])
+  i_out$sd_clustering <- sapply(x$local[eval,]/x$cover[eval,], sd)
+  #i_out$autocorrelation
+  i_out$patches <- lapply(x$timeseries, patches)
+  #i_out$cpd <- data.frame(n = unique())
+  i_out$largest <- sapply(i_out$patches, max)
+  #i_out$...
+  
+  return(i_out)
+}
+
+
+
+#########################################
+## count patches of a landscape object ##
+#########################################
+
+
+# get patch size and patchsize distribution
+patches <- function(x, state = levels(x$cells)[1], cumulative = TRUE) {
+  pattern <- x$cells
+  pattern <- pattern %in% state
+  map <- rep(NA, times = prod(x$dim))
+  old <- rep(99, times = prod(x$dim)) 
+  
+  while(!identical(old[pattern], map[pattern])) {
+    old <- map
+    count = as.integer(1)
+    for(i in which(pattern)) {
+      neighbors <- map[x_with_border][x_to_evaluate[i]+interact]
+      if(all(is.na(neighbors)) ) { 
+        map[i] <- count
+      } else {
+        map[i] <- min(neighbors, na.rm = TRUE)
+      }
+      count <- count +1
+    }
+    
+  }
+  
+  map <- as.factor(map)
+  patchvec <- as.vector(sapply(levels(map), function(i) length(which(map == i) ) )) 
+  
+  out <- vector()
+  if(length(patchvec) > 0) out <- sort(patchvec) else out <- NA
+  #out <- data.frame(size = unique(out), freq = sapply(unique(out), function(i) length(which(out >= i)) ))
+  return(out)
+  
+} 
