@@ -117,6 +117,7 @@ init_landscape <- function(states, cover, width = 50, height = 50) {
 summary.landscape <- function(x) {
   mapping(x$dim[1],x$dim[2])
   out <- list()
+  out$dim <- x$dim
   out$n <- sapply(levels(x$cells), function(y) {sum(x$cells == y)})
   out$cover <- out$n/sum(out$n)
   out$local <- sapply(levels(x$cells), function(y) {mean(  (count(x,y)/4)[x$cells == y]  )})
@@ -493,5 +494,6 @@ fitPL <- function(psd, p_spanning, n = NULL) {
   
   return(out)
 } 
+
 
 
