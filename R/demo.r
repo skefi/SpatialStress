@@ -15,6 +15,17 @@ plot(initial, cols = c("darkgreen", "grey70", "white"))
 summary(initial)
 
 
+# change size of lattice
+
+initial <- init_landscape(states = c("+","0","-"), cover = c(0.4,0.1,0.5), width = 25, height = 25)
+ 
+plot(initial, cols = c("darkgreen", "grey70", "white")) 
+
+summary(initial)
+
+
+
+
 # run simulation
 
 parms_grazing <- list(
@@ -66,12 +77,43 @@ musselrun <- ca(initial, parms_mussel, model = musselbed)
 
 
 ## specify what to plot 
-plot(musselrun, plotstates = c(TRUE, TRUE, TRUE), cols = c("black", "grey50", "grey90"), lwd = 2)
+plot(musselrun, plotstates = c(TRUE, FALSE, TRUE), cols = c("black", "grey50", "grey90"), lwd = 2)
 
 
 ## get plots of the snapshots
 par(mfrow = c(2,5), mar = c(0,0,0,0)+0.4)
 for(i in 1:9) {
   plot(musselrun$timeseries[[i]])
+  mtext(musselrun$timeseries[[i]], outer = TRUE)
 }
+dev.off()
 
+
+# simulate gradients
+
+
+
+parms_mussel_gradient  <- list(
+  r = 0.4, # recolonisation of empty sites dependent on local density
+  d = seq(0,1,0.1), # probability of disturbance of occupied sites if at least one disturbed site
+  delta = 0.01 # intrinsic disturbance rate
+) 
+
+
+# provides parallel backend
+library(foreach)
+library(doSNOW)
+
+workerlist <- c(rep("localhost", times = 7)) 
+
+cl <- makeSOCKcluster(workerlist, outfile='out_messages.txt')
+
+registerDoSNOW(cl)
+
+musselgradient <- ca_array(initial, parms_mussel_gradient, model = musselbed)
+
+stopCluster(cl)
+
+musselgradient
+
+plot(`+`~ d, data = musselgradient )
