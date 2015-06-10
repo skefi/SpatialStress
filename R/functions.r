@@ -307,6 +307,28 @@ plot.ca_result <- function(x, plotstates = c(TRUE, FALSE, FALSE), snapshots = FA
 
 
 
+###################################
+## run ca() over parameter array ##
+###################################
+
+ca_array <- function(x, parms, delta = 0.1, t_max = 1000, t_min = 500, t_eval = 200, isstable = 0.00001, saveeach = 50, model = musselbed) {
+  require(foreach)
+  iterations <- expand.grid(parms)
+  iterations <- cbind(ID = 1:nrow(iterations),iterations)
+  
+  foreach(i = iterations$ID, .combine = rbind) %dopar% {
+    
+    source("R/functions.r")
+    
+    run <- ca(x, iterations[i,, drop = TRUE], delta = delta, t_max = t_max, t_min = t_min, t_eval = t_eval, isstable = isstable, saveeach = saveeach, model = model)
+  
+    return(summary(run)$mean_cover)
+  } -> out
+  
+  
+  return(cbind(iterations , out) )
+}
+
 ################################
 ## get indicators of ca_result ##
 ################################
