@@ -23,11 +23,19 @@ A model object is a list `x` that contains
 
 #### `ca()`
 
-#### `init_landscape()`
+#### `init_landscape(states, width)`
+
+returns an object of class `landscape` that contains 
 
 #### `indicators()`
 
 
+
+## Open Questions 
+
+- [ ] inter-state clustering ?
+- [ ] patches and psd of primary cell state only ?
+- [ ] output structure for spatial snapshots in indicators?
 
 ## Bugs
 
@@ -37,28 +45,44 @@ A model object is a list `x` that contains
 - [ ] dynamic checking for equilibrium not working
 - [ ] dynamic calculation of snapshots not working
 
+
 ## ToDo
 
-- [ ] add model selector to `ca()`
-  - [ ] implement pred-prey model
-  - [x] implement mussel bed model
-  - [ ] implement forest gap model
-  - [x] check for valid parms object in `ca()`
+
+- [ ] transfer into R package structure
+
+### analysing landscape objects
+
+
 - [x] automatic color in plot.landscape
+- [x] return dim in summary.landscape
+- [ ] adapt animated plot function to create gifs and mpg
+
+### function `ca()`
+
+- [x] add model selector to `ca()`
+- [ ] implement pred-prey model
+- [x] implement mussel bed model
+- [ ] implement forest gap model
+- [x] check for valid parms object in `ca()`
+- [ ] return stability flag in `ca()`
 - [ ] plot function for results object
 - [ ] print.results
-- [ ] indicator function
-  - [x] select steady state timespan
-  - [x] calculate metrics on cover & local cover
-  - [ ] calculate metrics on snapshots
-- [ ] inter-state clustering ?
-- [ ] patches and psd of primary cell state only ?
-- [ ] complete function `indicators()`
-  - [ ] add spatial indicators of snapshots
-  - [ ] adapt function for fitting power laws
-  - [ ] make output of `ca()` compatible with early warning toolbox
-- [ ] write print functions for reports/summaries of objects of class  `ca_result` and `ca_indicators` 
 - [ ] benchmarking
   - [ ] optimize update functions 
   - [ ] optimize `ca()`
-  
+
+### function `ca_array()`
+
+- [ ] define output
+- [ ] improve performance
+
+### function `indicators()`
+
+- [x] select steady state timespan
+- [x] calculate metrics on cover & local cover
+- [ ] add spatial indicators of snapshots
+- [ ] adapt function for fitting power laws
+- [ ] write print functions for reports/summaries of objects of class  `ca_result` and `ca_indicators` 
+- [ ] write wrapper function to run `ca()` over array of parameters (parallelized)
+
