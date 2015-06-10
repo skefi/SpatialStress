@@ -267,3 +267,31 @@ ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_e
   return(result)
 }
 
+
+################################
+## plot function for 'ca_result' ##
+################################
+
+plot.ca_result <- function(x, plotstates = c(TRUE, FALSE, FALSE), snapshots = FALSE, cols = x$model$cols , lwd = 1, ...) {
+  
+  if(snapshots) {
+    
+  }
+  
+  plot(NA,NA,  
+       type = "l", 
+       col = x$model$cols[1], 
+       xlab = "time", ylab = paste("cover of", x$model$states[1]) , 
+       xlim = c(1, max(x$time)), ylim = c(0,1), 
+       ...)
+  
+  if(length(plotstates) == length(x$model$states)  ) {
+    for(i in (1:length(plotstates))[plotstates]) {
+      lines(x$time,x$cover[[i]], col = cols[i], lwd = lwd)
+      
+    }
+    
+  }
+
+}
+
