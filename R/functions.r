@@ -209,7 +209,10 @@ ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_e
   # initialise result object:
   result <- list()  # generate list object
   result$model <- model
+  result$model$parms <- parms
   result$time <- seq(0, t_min) # add vector of realized timesteps
+  result$evaluate <- c(t_min, t_min+2*t_eval)+1
+  
   result$cover <- as.data.frame(t(xstats$cover))
   result$cover <- result$cover[rep(1, t_min+1),] # preallocating memory
   
@@ -256,7 +259,7 @@ ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_e
       } else {
         stability <- 0 # set stability to 0 if cover is 0, immediate stop of simulation
       }
-      
+      result$evaluate <- c(min(t_1), max(t_2))
       result$time[i] <- i # save timestep to results
       
     }
@@ -265,6 +268,11 @@ ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_e
   
   class(result) <- "ca_result"
   return(result)
+}
+
+print.ca_result <- function(x) {
+  cat("Model run of", x$model$name, " over ", tail(x$time,1)," timesteps. \n")
+  cat("final cover:")
 }
 
 
