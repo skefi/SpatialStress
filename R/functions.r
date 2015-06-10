@@ -186,7 +186,7 @@ source("R/musselbed.r")
 ## run simulation of CA model ##
 ################################
 
-ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_eval = 200, isstable = 0.000001, saveeach = 50, model = musselbed )  {
+ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_eval = 200, isstable = 0.00001, saveeach = 50, model = musselbed )  {
   
   if(parms[1] != "default") { 
     if(!all(names(model$parms) %in% names(parms))) {
@@ -219,7 +219,8 @@ ca <- function(x, parms = "default", delta = 0.1, t_max = 1000, t_min = 500, t_e
   
   result$local <- as.data.frame(t(xstats$local))
   result$local <- result$local[rep(1, t_min+1),] # preallocating memory
-
+  
+  result$snapshots <- snapshots
   result$timeseries <- list()
   result$timeseries <- lapply(1:n_snaps, function(i) x) # preallocating memory
   
