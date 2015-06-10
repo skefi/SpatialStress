@@ -1,7 +1,7 @@
 ## Example
 
 ## install.packages(c("moments"))
-
+setwd("~/GitHub/SpatialStress")
 source("R/functions.r")
 
 
